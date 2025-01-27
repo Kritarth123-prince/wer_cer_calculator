@@ -1,6 +1,7 @@
 import os
 import csv
 import argparse
+import pkg_resources
 import pandas as pd
 from distance import levenshtein
 
@@ -14,6 +15,12 @@ def load_data(file_path):
                 normalized_filename = os.path.splitext(filename)[0]
                 data[normalized_filename] = text
     return data
+
+def get_version():
+    try:
+        return pkg_resources.get_distribution("wer_cer_calculator").version
+    except pkg_resources.DistributionNotFound:
+        return "Package not installed!" 
 
 def create_csv(gt_file, hyp_file, output_csv):
     gt_data = load_data(gt_file)
@@ -80,6 +87,7 @@ def main():
     parser.add_argument("--gt_file", type=str, required=True, help="Path to the ground truth file.")
     parser.add_argument("--hyp_file", type=str, required=True, help="Path to the hypothesis file.")
     parser.add_argument("--output_csv", type=str, help="Path to the output CSV file. Optional.")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {get_version()}")
 
     args = parser.parse_args()
 
